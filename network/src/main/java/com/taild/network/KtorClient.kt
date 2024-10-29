@@ -1,5 +1,7 @@
 package com.taild.network
 
+import com.taild.domain.Character
+import com.taild.remote.RemoteCharacter
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -10,10 +12,9 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-const val baseUrl = "https://rickandmortyapi.com/api"
+const val baseUrl = "https://rickandmortyapi.com/api/"
 class KtorClient {
     private val client = HttpClient(OkHttp) {
         defaultRequest { url(baseUrl) }
@@ -32,17 +33,5 @@ class KtorClient {
     }
 
     suspend fun getCharacters(id: Int): Character =
-        client.get("character/$id").body()
-}
-
-@Serializable
-data class Character(
-    val id: Int,
-    val name: String,
-    val origin: Origin
-) {
-    @Serializable
-    data class Origin(
-        val name: String
-    )
+        client.get("character/$id").body<RemoteCharacter>().toDomainCharacter()
 }

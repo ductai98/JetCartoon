@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -13,13 +14,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.taild.domain.Character
 import com.taild.jetcartoon.ui.theme.JetCartoonTheme
-import com.taild.network.Character
 import com.taild.network.KtorClient
+import kotlinx.coroutines.delay
+import kotlin.reflect.full.valueParameters
 
 class MainActivity : ComponentActivity() {
 
@@ -34,6 +36,7 @@ class MainActivity : ComponentActivity() {
             }
 
             LaunchedEffect(Unit) {
+                delay(5000)
                 character = ktorClient.getCharacters(1)
             }
 
@@ -43,8 +46,16 @@ class MainActivity : ComponentActivity() {
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
-
-                    Text(text = character?.name ?: "No character found")
+                    Column {
+                        character?.let {
+                            for (property in character!!::class.members) {
+                                val value = property.valueParameters
+                                Text(text = "${property.name} = ${value.forEach { 
+                                    it.name
+                                }}")
+                            }
+                        }
+                    }
                 }
             }
         }
