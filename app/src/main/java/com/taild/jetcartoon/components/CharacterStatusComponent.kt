@@ -16,6 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.taild.domain.CharacterStatus
+import com.taild.jetcartoon.ui.theme.RickPrimary
+import com.taild.jetcartoon.ui.theme.RickTextPrimary
 
 @Composable
 fun CharacterStatusComponent(
@@ -23,13 +25,8 @@ fun CharacterStatusComponent(
 ) {
     Row(
         modifier = Modifier
-            .width(IntrinsicSize.Min)
-            .background(
-                color = characterStatus.asColor(),
-                shape = RoundedCornerShape(12.dp)
-            )
             .border(
-                width = 2.dp,
+                width = 1.dp,
                 color = characterStatus.color,
                 shape = RoundedCornerShape(12.dp)
             )
@@ -42,13 +39,9 @@ fun CharacterStatusComponent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Status: ",
-            fontSize = 14.sp
-        )
-        Text(
-            text = characterStatus.displayName,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
+            text = "Status: ${characterStatus.displayName}",
+            fontSize = 20.sp,
+            color = RickTextPrimary
         )
     }
 }

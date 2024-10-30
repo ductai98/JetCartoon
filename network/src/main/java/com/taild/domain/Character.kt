@@ -9,7 +9,7 @@ class Character(
     val gender: CharacterGender,
     val origin: Origin,
     val location: Location,
-    val image: String,
+    val imageUrl: String,
     val episodeUrls: List<String>,
     val url: String,
     val created: String

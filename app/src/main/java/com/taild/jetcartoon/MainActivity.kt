@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.taild.domain.Character
+import com.taild.jetcartoon.ui.screens.CharacterDetailScreen
 import com.taild.jetcartoon.ui.theme.JetCartoonTheme
 import com.taild.network.KtorClient
 import kotlinx.coroutines.delay
@@ -29,21 +31,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var character by remember {
-                mutableStateOf<Character?>(null)
-            }
-
-            LaunchedEffect(Unit) {
-                delay(5000)
-                character = ktorClient.getCharacters(1)
-            }
-
             JetCartoonTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    Surface(
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) {
+                        CharacterDetailScreen(
+                            ktorClient = ktorClient,
+                            characterId = 1
+                        )
+                    }
                 }
             }
         }

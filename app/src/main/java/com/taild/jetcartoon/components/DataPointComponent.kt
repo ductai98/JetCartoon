@@ -1,7 +1,9 @@
 package com.taild.jetcartoon.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +36,11 @@ fun DataPointComponent(dataPoint: DataPoint) {
 @Preview
 @Composable
 fun DataPointComponentPreview() {
-    Surface(modifier = Modifier.background(color = Color.Black)) {
-        DataPointComponent(dataPoint = DataPoint("Last known location", "Earth (C-137)"))
+    MaterialTheme {
+        Surface(
+            color = Color.Black
+        ) {
+            DataPointComponent(dataPoint = DataPoint("Last known location", "Earth (C-137)"))
+        }
     }
 }
