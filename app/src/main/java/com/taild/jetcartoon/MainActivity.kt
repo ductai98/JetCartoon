@@ -46,16 +46,6 @@ class MainActivity : ComponentActivity() {
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
-                    Column {
-                        character?.let {
-                            for (property in character!!::class.members) {
-                                val value = property.valueParameters
-                                Text(text = "${property.name} = ${value.forEach { 
-                                    it.name
-                                }}")
-                            }
-                        }
-                    }
                 }
             }
         }

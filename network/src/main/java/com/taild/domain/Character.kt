@@ -10,7 +10,7 @@ class Character(
     val origin: Origin,
     val location: Location,
     val image: String,
-    val episode: List<String>,
+    val episodeUrls: List<String>,
     val url: String,
     val created: String
 ) {

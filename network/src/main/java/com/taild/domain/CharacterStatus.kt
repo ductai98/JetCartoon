@@ -10,4 +10,12 @@ sealed class CharacterStatus(
     object Alive: CharacterStatus("Alive", Color.Green)
     object Dead: CharacterStatus("Dead", Color.Red)
     object Unknown: CharacterStatus("Unknown", Color.Yellow)
+
+    fun asColor(): Color {
+        return when (this) {
+            Alive -> Color.Green
+            Dead -> Color.Red
+            Unknown -> Color.Yellow
+        }
+    }
 }

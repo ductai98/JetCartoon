@@ -54,7 +54,7 @@ data class RemoteCharacter(
             origin = Character.Origin(origin.name, origin.url),
             location = Character.Location(location.name, location.url),
             image = image,
-            episode = episode,
+            episodeUrls = episode,
             url = url,
             created = created
         )
