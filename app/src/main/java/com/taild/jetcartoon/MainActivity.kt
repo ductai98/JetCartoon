@@ -4,24 +4,26 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.taild.domain.Character
-import com.taild.jetcartoon.ui.screens.CharacterDetailScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.taild.jetcartoon.navigation.CharacterDetailRoute
+import com.taild.jetcartoon.navigation.CharacterEpisodeRoute
+import com.taild.jetcartoon.ui.screens.characterepisode.CharacterEpisodeScreen
+import com.taild.jetcartoon.ui.screens.charaterdetail.CharacterDetailScreen
 import com.taild.jetcartoon.ui.theme.JetCartoonTheme
 import com.taild.network.KtorClient
-import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
 
@@ -31,15 +33,33 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             JetCartoonTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Surface(
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        CharacterDetailScreen(
-                            ktorClient = ktorClient,
-                            characterId = 1
-                        )
+                        NavHost(
+                            navController = navController,
+                            startDestination = CharacterDetailRoute,
+                            enterTransition = { EnterTransition.None },
+                            exitTransition = { ExitTransition.None }
+                        ) {
+                            composable<CharacterDetailRoute> {
+                                CharacterDetailScreen(
+                                    ktorClient = ktorClient,
+                                    characterId = 10,
+                                    onAllEpisodesClick = {
+                                        navController.navigate(CharacterEpisodeRoute(it))
+                                    }
+                                )
+                            }
+                            composable<CharacterEpisodeRoute> {
+                                val characterId = it.toRoute<CharacterEpisodeRoute>().characterId
+                                CharacterEpisodeScreen(characterId)
+                            }
+                        }
+
                     }
                 }
             }

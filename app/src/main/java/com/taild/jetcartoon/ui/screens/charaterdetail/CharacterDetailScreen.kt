@@ -1,4 +1,4 @@
-package com.taild.jetcartoon.ui.screens
+package com.taild.jetcartoon.ui.screens.charaterdetail
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import com.taild.domain.Character
 import com.taild.jetcartoon.components.CharacterDetailNamePlateComponent
@@ -42,7 +41,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun CharacterDetailScreen(
     ktorClient: KtorClient,
-    characterId: Int
+    characterId: Int,
+    onAllEpisodesClick: (Int) -> Unit = {}
 ) {
     var character by remember { mutableStateOf<Character?>(null) }
 
@@ -65,7 +65,14 @@ fun CharacterDetailScreen(
 
     LaunchedEffect(Unit) {
         delay(500)
-        character = ktorClient.getCharacters(characterId)
+        ktorClient
+            .getCharacters(characterId)
+            .onSuccess { data ->
+                character = data
+            }
+            .onFailure {
+                // TODO handle api exception
+            }
     }
 
     LazyColumn(
@@ -124,7 +131,7 @@ fun CharacterDetailScreen(
                     )
                     .clip(shape = RoundedCornerShape(12.dp))
                     .clickable {
-                        // TODO
+                        onAllEpisodesClick(characterId)
                     }
                     .padding(all = 8.dp)
                     .fillMaxWidth()

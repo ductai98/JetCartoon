@@ -31,10 +31,7 @@ fun CharacterStatusComponent(
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(
-                top = 12.dp,
-                bottom = 12.dp,
-                start = 12.dp,
-                end = 48.dp
+                all = 12.dp
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {

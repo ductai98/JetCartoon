@@ -1,18 +1,15 @@
 package com.taild.jetcartoon.components
 
-import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.taild.jetcartoon.ui.screens.DataPoint
+import com.taild.jetcartoon.ui.screens.charaterdetail.DataPoint
 import com.taild.jetcartoon.ui.theme.RickAction
 import com.taild.jetcartoon.ui.theme.RickTextPrimary
 
