@@ -45,7 +45,7 @@ fun CharacterDetailScreen(
     onAllEpisodesClick: (Int) -> Unit = {}
 ) {
     var character by remember { mutableStateOf<Character?>(null) }
-
+    var retry = 0
     val characterDataPoints: List<DataPoint> by remember {
         derivedStateOf {
             buildList {
@@ -63,15 +63,14 @@ fun CharacterDetailScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        delay(500)
+    LaunchedEffect(key1 = retry) {
         ktorClient
             .getCharacters(characterId)
             .onSuccess { data ->
                 character = data
             }
             .onFailure {
-                // TODO handle api exception
+                retry = 1
             }
     }
 
