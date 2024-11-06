@@ -54,7 +54,7 @@ data class RemoteCharacter(
             origin = Character.Origin(origin.name, origin.url),
             location = Character.Location(location.name, location.url),
             imageUrl = image,
-            episodeUrls = episode,
+            episodeIds = episode.map { it.split("/").last().toInt() },
             url = url,
             created = created
         )

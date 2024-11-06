@@ -1,5 +1,6 @@
 package com.taild.jetcartoon.ui.screens.charaterdetail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,8 +36,8 @@ import com.taild.domain.Character
 import com.taild.jetcartoon.components.CharacterDetailNamePlateComponent
 import com.taild.jetcartoon.components.DataPointComponent
 import com.taild.jetcartoon.ui.theme.RickAction
+import com.taild.jetcartoon.ui.theme.RickPrimary
 import com.taild.network.KtorClient
-import kotlinx.coroutines.delay
 
 @Composable
 fun CharacterDetailScreen(
@@ -57,7 +58,7 @@ fun CharacterDetailScreen(
                         add(DataPoint("Type", type))
                     }
                     add(DataPoint("Origin", character.origin.name))
-                    add(DataPoint("Episode count", character.episodeUrls.size.toString()))
+                    add(DataPoint("Episode count", character.episodeIds.size.toString()))
                 }
             }
         }
@@ -65,7 +66,7 @@ fun CharacterDetailScreen(
 
     LaunchedEffect(key1 = retry) {
         ktorClient
-            .getCharacters(characterId)
+            .getCharacter(characterId)
             .onSuccess { data ->
                 character = data
             }
@@ -75,7 +76,7 @@ fun CharacterDetailScreen(
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(RickPrimary),
         contentPadding = PaddingValues(16.dp)
     ) {
         if (character == null) {

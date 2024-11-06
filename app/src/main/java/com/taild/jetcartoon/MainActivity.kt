@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                             composable<CharacterDetailRoute> {
                                 CharacterDetailScreen(
                                     ktorClient = ktorClient,
-                                    characterId = 10,
+                                    characterId = 5,
                                     onAllEpisodesClick = {
                                         navController.navigate(CharacterEpisodeRoute(it))
                                     }
@@ -56,7 +56,10 @@ class MainActivity : ComponentActivity() {
                             }
                             composable<CharacterEpisodeRoute> {
                                 val characterId = it.toRoute<CharacterEpisodeRoute>().characterId
-                                CharacterEpisodeScreen(characterId)
+                                CharacterEpisodeScreen(
+                                    characterId = characterId,
+                                    ktorClient = ktorClient
+                                )
                             }
                         }
 

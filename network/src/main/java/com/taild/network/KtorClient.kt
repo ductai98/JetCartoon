@@ -1,7 +1,9 @@
 package com.taild.network
 
 import com.taild.domain.Character
+import com.taild.domain.Episode
 import com.taild.remote.RemoteCharacter
+import com.taild.remote.RemoteEpisode
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -34,7 +36,7 @@ class KtorClient {
 
     private var characterCache = mutableMapOf<Int, Character>()
 
-    suspend fun getCharacters(id: Int): ApiOperation<Character> {
+    suspend fun getCharacter(id: Int): ApiOperation<Character> {
         characterCache[id]?.let{
             return ApiOperation.Success(data = it)
         }
@@ -48,6 +50,24 @@ class KtorClient {
         }
     }
 
+    suspend fun getEpisodes(episodeIds: List<Int>): ApiOperation<List<Episode>> {
+        if (episodeIds.size > 1) {
+            val ids = episodeIds.joinToString(separator = ", ")
+            return safeApiCall {
+                client.get("episode/$ids")
+                    .body<List<RemoteEpisode>>()
+                    .map { it.toDomainEpisode() }
+            }
+        } else {
+            return safeApiCall {
+                List(1) {
+                    client.get("episode/${episodeIds[0]}")
+                        .body<RemoteEpisode>()
+                        .toDomainEpisode()
+                }
+            }
+        }
+    }
 
     private inline fun <T> safeApiCall(apiCall: () -> T): ApiOperation<T> {
         try {
