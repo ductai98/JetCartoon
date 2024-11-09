@@ -24,10 +24,14 @@ import com.taild.jetcartoon.ui.screens.characterepisode.CharacterEpisodeScreen
 import com.taild.jetcartoon.ui.screens.charaterdetail.CharacterDetailScreen
 import com.taild.jetcartoon.ui.theme.JetCartoonTheme
 import com.taild.network.KtorClient
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val ktorClient = KtorClient()
+    @Inject
+    lateinit var ktorClient: KtorClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

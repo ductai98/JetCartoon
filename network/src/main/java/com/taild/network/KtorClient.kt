@@ -60,11 +60,11 @@ class KtorClient {
             }
         } else {
             return safeApiCall {
-                List(1) {
+                listOf(
                     client.get("episode/${episodeIds[0]}")
                         .body<RemoteEpisode>()
                         .toDomainEpisode()
-                }
+                )
             }
         }
     }
