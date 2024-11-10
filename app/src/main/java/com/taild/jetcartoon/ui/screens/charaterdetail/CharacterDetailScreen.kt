@@ -13,133 +13,124 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.taild.domain.Character
 import com.taild.jetcartoon.components.CharacterDetailNamePlateComponent
 import com.taild.jetcartoon.components.DataPointComponent
 import com.taild.jetcartoon.ui.theme.RickAction
 import com.taild.jetcartoon.ui.theme.RickPrimary
-import com.taild.network.KtorClient
 
 @Composable
 fun CharacterDetailScreen(
-    ktorClient: KtorClient,
+    viewModel: CharacterDetailViewModel = hiltViewModel(),
     characterId: Int,
     onAllEpisodesClick: (Int) -> Unit = {}
 ) {
-    var character by remember { mutableStateOf<Character?>(null) }
-    var retry = 0
-    val characterDataPoints: List<DataPoint> by remember {
-        derivedStateOf {
-            buildList {
-                character?.let {  character ->
-                    add(DataPoint("Last known location", character.location.name))
-                    add(DataPoint("Species", character.species))
-                    add(DataPoint("Gender", character.gender.displayName))
-                    character.type.takeIf { it.isNotEmpty() }?.let { type ->
-                        add(DataPoint("Type", type))
-                    }
-                    add(DataPoint("Origin", character.origin.name))
-                    add(DataPoint("Episode count", character.episodeIds.size.toString()))
-                }
-            }
-        }
-    }
+    val state by viewModel.characterDetailViewState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = retry) {
-        ktorClient
-            .getCharacter(characterId)
-            .onSuccess { data ->
-                character = data
-            }
-            .onFailure {
-                retry = 1
-            }
+    LaunchedEffect(Unit) {
+        viewModel.fetCharacter(characterId)
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().background(RickPrimary),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(RickPrimary),
         contentPadding = PaddingValues(16.dp)
     ) {
-        if (character == null) {
-            item { LoadingState() }
-            return@LazyColumn
-        }
-
-        item {
-             CharacterDetailNamePlateComponent(
-                 name = character!!.name,
-                 status = character!!.status
-             )
-        }
-
-        item { Spacer(modifier = Modifier.height(8.dp)) }
-
-        // coil image loader
-        item {
-            SubcomposeAsyncImage(
-                model = character!!.imageUrl,
-                contentDescription = "Character image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(12.dp)),
-                loading = {
-                    LoadingState()
-                }
-            )
-        }
-
-        items(characterDataPoints) {data ->
-            Spacer(modifier = Modifier.height(32.dp))
-            DataPointComponent(dataPoint = data)
-        }
-
-        item { Spacer(modifier = Modifier.height(32.dp)) }
-
-        // Button
-        item {
-            Text(
-                text = "View all episodes",
-                color = RickAction,
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .border(
-                        width = 1.dp,
-                        color = RickAction,
-                        shape = RoundedCornerShape(12.dp)
+        when (val viewState = state) {
+            is CharacterDetailViewState.Loading -> {
+                item { LoadingState() }
+            }
+            is CharacterDetailViewState.Error -> {
+                // TODO Error
+            }
+            is CharacterDetailViewState.Success -> {
+                val character = viewState.character
+                val dataPoint = viewState.characterDataPoints
+                item {
+                    CharacterDetailNamePlateComponent(
+                        name = character.name,
+                        status = character.status
                     )
-                    .clip(shape = RoundedCornerShape(12.dp))
-                    .clickable {
-                        onAllEpisodesClick(characterId)
-                    }
-                    .padding(all = 8.dp)
-                    .fillMaxWidth()
-            )
-        }
+                }
 
-        item { Spacer(modifier = Modifier.height(64.dp)) }
+                item { Spacer(modifier = Modifier.height(8.dp)) }
+
+                // coil image loader
+                item {
+                    SubcomposeAsyncImage(
+                        model = character.imageUrl,
+                        contentDescription = "Character image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(12.dp)),
+                        loading = {
+                            LoadingState()
+                        }
+                    )
+                }
+
+
+                items(items = dataPoint) { data ->
+                    Spacer(modifier = Modifier.height(32.dp))
+                    DataPointComponent(dataPoint = data)
+                }
+
+                item { Spacer(modifier = Modifier.height(32.dp)) }
+
+                // Button
+                item {
+                    Text(
+                        text = "View all episodes",
+                        color = RickAction,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp)
+                            .border(
+                                width = 1.dp,
+                                color = RickAction,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clip(shape = RoundedCornerShape(12.dp))
+                            .clickable {
+                                onAllEpisodesClick(character.id)
+                            }
+                            .padding(all = 8.dp)
+                            .fillMaxWidth()
+                    )
+                }
+
+                item { Spacer(modifier = Modifier.height(64.dp)) }
+            }
+        }
     }
+}
+
+@Composable
+fun LazyListScope.DetailScreen(
+    character: Character,
+    dataPoint: List<DataPoint>,
+) {
+
 }
 
 @Composable
@@ -157,12 +148,6 @@ fun LoadingState() {
         )
     }
 
-}
-
-@Preview
-@Composable
-fun ScreenPreview() {
-    CharacterDetailScreen(ktorClient = KtorClient(), characterId = 1)
 }
 
 data class DataPoint(

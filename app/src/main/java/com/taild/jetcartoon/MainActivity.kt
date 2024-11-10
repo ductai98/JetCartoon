@@ -51,7 +51,6 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable<CharacterDetailRoute> {
                                 CharacterDetailScreen(
-                                    ktorClient = ktorClient,
                                     characterId = 5,
                                     onAllEpisodesClick = {
                                         navController.navigate(CharacterEpisodeRoute(it))
