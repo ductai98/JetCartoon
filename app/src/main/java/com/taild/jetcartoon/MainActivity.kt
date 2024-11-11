@@ -20,8 +20,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.taild.jetcartoon.navigation.CharacterDetailRoute
 import com.taild.jetcartoon.navigation.CharacterEpisodeRoute
+import com.taild.jetcartoon.navigation.HomeRoute
 import com.taild.jetcartoon.ui.screens.characterepisode.CharacterEpisodeScreen
 import com.taild.jetcartoon.ui.screens.charaterdetail.CharacterDetailScreen
+import com.taild.jetcartoon.ui.screens.home.HomeScreen
 import com.taild.jetcartoon.ui.theme.JetCartoonTheme
 import com.taild.network.KtorClient
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,6 +51,9 @@ class MainActivity : ComponentActivity() {
                             enterTransition = { EnterTransition.None },
                             exitTransition = { ExitTransition.None }
                         ) {
+                            composable<HomeRoute> {
+                                HomeScreen()
+                            }
                             composable<CharacterDetailRoute> {
                                 CharacterDetailScreen(
                                     characterId = 5,

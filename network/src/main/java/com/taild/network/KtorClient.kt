@@ -1,8 +1,10 @@
 package com.taild.network
 
 import com.taild.domain.Character
+import com.taild.domain.CharacterPage
 import com.taild.domain.Episode
 import com.taild.remote.RemoteCharacter
+import com.taild.remote.RemoteCharacterPage
 import com.taild.remote.RemoteEpisode
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -66,6 +68,14 @@ class KtorClient {
                         .toDomainEpisode()
                 )
             }
+        }
+    }
+
+    suspend fun getCharacterByPage(pageNumber: Int): ApiOperation<CharacterPage> {
+        return safeApiCall {
+            client.get("character/?page=$pageNumber")
+                .body<RemoteCharacterPage>()
+                .toDomain()
         }
     }
 

@@ -11,11 +11,11 @@ import coil.compose.SubcomposeAsyncImage
 import com.taild.jetcartoon.ui.screens.charaterdetail.LoadingState
 
 @Composable
-fun CharacterImage(url: String) {
+fun CharacterImage(url: String, modifier: Modifier = Modifier) {
     SubcomposeAsyncImage(
         model = url,
         contentDescription = "Character image",
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
             .clip(RoundedCornerShape(12.dp)),
