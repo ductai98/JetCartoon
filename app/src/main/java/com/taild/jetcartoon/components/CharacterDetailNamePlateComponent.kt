@@ -21,7 +21,7 @@ fun CharacterDetailNamePlateComponent(name: String, status: CharacterStatus) {
             text = name,
             fontSize = 42.sp,
             fontWeight = FontWeight.Bold,
-            color = RickAction
+            color = RickAction,
         )
     }
 }
@@ -30,7 +30,7 @@ fun CharacterDetailNamePlateComponent(name: String, status: CharacterStatus) {
 @Composable
 fun NamePlatePreview() {
     CharacterDetailNamePlateComponent(
-        name = "Rick Sanchez",
+        name = "Rick Sanchez Rick Sanchez Rick Sanchez",
         status = CharacterStatus.Alive
     )
 }

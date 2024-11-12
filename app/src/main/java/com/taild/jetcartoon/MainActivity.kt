@@ -47,18 +47,25 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = CharacterDetailRoute,
+                            startDestination = HomeRoute,
                             enterTransition = { EnterTransition.None },
                             exitTransition = { ExitTransition.None }
                         ) {
                             composable<HomeRoute> {
-                                HomeScreen()
+                                HomeScreen(
+                                    onCharacterClick = { characterId ->
+                                        navController.navigate(
+                                            CharacterDetailRoute(characterId)
+                                        )
+                                    }
+                                )
                             }
                             composable<CharacterDetailRoute> {
+                                val id = it.toRoute<CharacterDetailRoute>().characterId
                                 CharacterDetailScreen(
-                                    characterId = 5,
-                                    onAllEpisodesClick = {
-                                        navController.navigate(CharacterEpisodeRoute(it))
+                                    characterId = id,
+                                    onAllEpisodesClick = { characterId ->
+                                        navController.navigate(CharacterEpisodeRoute(characterId))
                                     }
                                 )
                             }
@@ -70,7 +77,6 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
-
                     }
                 }
             }

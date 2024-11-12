@@ -126,19 +126,11 @@ fun CharacterDetailScreen(
 }
 
 @Composable
-fun LazyListScope.DetailScreen(
-    character: Character,
-    dataPoint: List<DataPoint>,
-) {
-
-}
-
-@Composable
 fun LoadingState() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 300.dp),
+            .padding(top = 100.dp),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(

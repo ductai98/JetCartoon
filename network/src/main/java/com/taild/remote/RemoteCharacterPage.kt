@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RemoteCharacterPage(
     val info: Info,
-    val result: List<RemoteCharacter>
+    val results: List<RemoteCharacter>
 ) {
     @Serializable
     data class Info(
@@ -24,7 +24,7 @@ data class RemoteCharacterPage(
                 next = info.next,
                 prev = info.prev
             ),
-            result = result.map {
+            results = results.map {
                 it.toDomainCharacter()
             }
         )

@@ -3,7 +3,7 @@ package com.taild.jetcartoon.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-object CharacterDetailRoute
+data class CharacterDetailRoute(val characterId: Int)
 
 @Serializable
 data class CharacterEpisodeRoute(val characterId: Int)

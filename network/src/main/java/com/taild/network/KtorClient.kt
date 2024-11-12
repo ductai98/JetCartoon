@@ -37,6 +37,7 @@ class KtorClient {
     }
 
     private var characterCache = mutableMapOf<Int, Character>()
+    private var characterPageCache = mutableMapOf<Int, CharacterPage>()
 
     suspend fun getCharacter(id: Int): ApiOperation<Character> {
         characterCache[id]?.let{
