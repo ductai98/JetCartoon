@@ -10,3 +10,9 @@ data class CharacterEpisodeRoute(val characterId: Int)
 
 @Serializable
 object HomeRoute
+
+@Serializable
+object SearchRoute
+
+@Serializable
+object EpisodesRoute
