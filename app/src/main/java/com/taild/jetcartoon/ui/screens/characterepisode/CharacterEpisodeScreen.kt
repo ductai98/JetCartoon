@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ import com.taild.jetcartoon.components.CharacterImage
 import com.taild.jetcartoon.components.CharacterNameComponent
 import com.taild.jetcartoon.components.DataPointComponent
 import com.taild.jetcartoon.components.EpisodeRowComponent
+import com.taild.jetcartoon.components.SimpleToolbar
 import com.taild.jetcartoon.ui.screens.charaterdetail.DataPoint
 import com.taild.jetcartoon.ui.screens.charaterdetail.LoadingState
 import com.taild.jetcartoon.ui.theme.RickPrimary
@@ -44,7 +46,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun CharacterEpisodeScreen(
     characterId: Int,
-    ktorClient: KtorClient
+    ktorClient: KtorClient,
+    onBackClick: () -> Unit
 ) {
     var characterState by remember {
         mutableStateOf<Character?>(null)
@@ -71,20 +74,32 @@ fun CharacterEpisodeScreen(
             }
     }
 
-    characterState?.let {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = RickPrimary) {
-            MainScreen(
-                character = it,
-                episodes = episodesState
-            )
+    characterState?.let { character ->
+        Scaffold(
+            topBar = {
+                SimpleToolbar(
+                    title = "Character Episodes",
+                    onBackAction = onBackClick
+                )
+            }
+        ) { innerPadding ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                color = RickPrimary) {
+                EpisodesScreen(
+                    character = character,
+                    episodes = episodesState
+                )
+            }
         }
+
     } ?: LoadingState()
 }
 
 @Composable
-private fun MainScreen(
+private fun EpisodesScreen(
     character: Character,
     episodes: List<Episode>
 ) {

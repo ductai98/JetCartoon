@@ -66,6 +66,9 @@ class MainActivity : ComponentActivity() {
                                     characterId = id,
                                     onAllEpisodesClick = { characterId ->
                                         navController.navigate(CharacterEpisodeRoute(characterId))
+                                    },
+                                    onBackClick = {
+                                        navController.navigateUp()
                                     }
                                 )
                             }
@@ -73,7 +76,10 @@ class MainActivity : ComponentActivity() {
                                 val characterId = it.toRoute<CharacterEpisodeRoute>().characterId
                                 CharacterEpisodeScreen(
                                     characterId = characterId,
-                                    ktorClient = ktorClient
+                                    ktorClient = ktorClient,
+                                    onBackClick = {
+                                        navController.navigateUp()
+                                    }
                                 )
                             }
                         }
