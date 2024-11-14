@@ -3,9 +3,11 @@ package com.taild.network
 import com.taild.domain.Character
 import com.taild.domain.CharacterPage
 import com.taild.domain.Episode
+import com.taild.domain.EpisodePage
 import com.taild.remote.RemoteCharacter
 import com.taild.remote.RemoteCharacterPage
 import com.taild.remote.RemoteEpisode
+import com.taild.remote.RemoteEpisodePage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -70,6 +72,39 @@ class KtorClient {
                 )
             }
         }
+    }
+
+    suspend fun getEpisodesByPage(pageIndex: Int): ApiOperation<EpisodePage> {
+        return safeApiCall {
+            client.get("episode/?page=$pageIndex")
+                .body<RemoteEpisodePage>()
+                .toDomain()
+        }
+    }
+
+    suspend fun getAllEpisodes(): ApiOperation<List<Episode>> {
+        val data = mutableListOf<Episode>()
+        var exception: Exception? = null
+        var totalPageCount = 0
+        getEpisodesByPage(1).onSuccess { firstPage ->
+            totalPageCount = firstPage.info.pages
+            data.addAll(firstPage.result)
+        }.onFailure { e ->
+            exception = e
+        }
+
+        for (index in 2..totalPageCount) {
+            getEpisodesByPage(index).onSuccess {
+                data.addAll(it.result)
+            }.onFailure { e ->
+                exception = e
+            }
+        }
+
+        return exception?.let { ex ->
+            ApiOperation.Failure(ex)
+        } ?: ApiOperation.Success(data = data)
+
     }
 
     suspend fun getCharacterByPage(pageNumber: Int): ApiOperation<CharacterPage> {
