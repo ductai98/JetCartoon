@@ -88,14 +88,14 @@ class KtorClient {
         var totalPageCount = 0
         getEpisodesByPage(1).onSuccess { firstPage ->
             totalPageCount = firstPage.info.pages
-            data.addAll(firstPage.result)
+            data.addAll(firstPage.results)
         }.onFailure { e ->
             exception = e
         }
 
         for (index in 2..totalPageCount) {
             getEpisodesByPage(index).onSuccess {
-                data.addAll(it.result)
+                data.addAll(it.results)
             }.onFailure { e ->
                 exception = e
             }

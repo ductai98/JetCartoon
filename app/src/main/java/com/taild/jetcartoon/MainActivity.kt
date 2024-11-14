@@ -42,6 +42,7 @@ import com.taild.jetcartoon.navigation.CharacterEpisodeRoute
 import com.taild.jetcartoon.navigation.EpisodesRoute
 import com.taild.jetcartoon.navigation.HomeRoute
 import com.taild.jetcartoon.navigation.SearchRoute
+import com.taild.jetcartoon.ui.screens.allepisodes.AllEpisodesScreen
 import com.taild.jetcartoon.ui.screens.characterepisode.CharacterEpisodeScreen
 import com.taild.jetcartoon.ui.screens.charaterdetail.CharacterDetailScreen
 import com.taild.jetcartoon.ui.screens.home.HomeScreen
@@ -72,7 +73,9 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        NavigationBar {
+                        NavigationBar(
+                            containerColor = RickPrimary
+                        ) {
                             val navBackStackEntry by navController.currentBackStackEntryAsState()
                             val currentDestination = navBackStackEntry?.destination
                             items.forEach { screen ->
@@ -142,7 +145,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable<EpisodesRoute> {
-                                Column(
+                                /*Column(
                                     modifier = Modifier.fillMaxSize(),
                                     verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally
@@ -152,7 +155,8 @@ class MainActivity : ComponentActivity() {
                                         fontSize = 62.sp,
                                         color = Color.White
                                     )
-                                }
+                                }*/
+                                AllEpisodesScreen()
                             }
                             composable<SearchRoute> {
                                 Column(

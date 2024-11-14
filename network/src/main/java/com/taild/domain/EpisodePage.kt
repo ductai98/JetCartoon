@@ -2,7 +2,7 @@ package com.taild.domain
 
 data class EpisodePage(
     val info: Info,
-    val result: List<Episode>
+    val results: List<Episode>
 ) {
     data class Info(
         val count: Int = 0,
