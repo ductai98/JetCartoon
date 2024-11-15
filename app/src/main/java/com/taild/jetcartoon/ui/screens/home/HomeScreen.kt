@@ -21,7 +21,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.taild.jetcartoon.components.CharacterGridItem
 import com.taild.jetcartoon.components.SimpleToolbar
 import com.taild.jetcartoon.ui.screens.charaterdetail.LoadingState
-import com.taild.jetcartoon.ui.theme.RickPrimary
 
 @Composable
 fun HomeScreen(
@@ -59,8 +58,7 @@ fun HomeScreen(
                 topBar = { SimpleToolbar(title = "All characters") }
             ) { innerPadding ->
                 Surface(
-                    modifier = Modifier.padding(innerPadding),
-                    color = RickPrimary
+                    modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
                 ) {
                     LazyVerticalGrid(
                         state = scrollState,

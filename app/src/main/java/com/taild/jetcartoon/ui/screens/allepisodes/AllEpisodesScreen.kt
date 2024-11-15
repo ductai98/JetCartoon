@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,12 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.taild.jetcartoon.NavDestination
 import com.taild.jetcartoon.components.EpisodeRowComponent
 import com.taild.jetcartoon.components.SimpleToolbar
 import com.taild.jetcartoon.ui.screens.charaterdetail.LoadingState
 import com.taild.jetcartoon.ui.theme.RickAction
-import com.taild.jetcartoon.ui.theme.RickPrimary
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -54,8 +53,7 @@ fun AllEpisodesScreen(
                 }
             ){ innerPadding ->
                 Surface(
-                    modifier = Modifier.padding(innerPadding),
-                    color = RickPrimary
+                    modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
                 ) {
                     LazyColumn(
                         contentPadding = PaddingValues(16.dp),
@@ -67,7 +65,11 @@ fun AllEpisodesScreen(
                             }.toSet().size
                             stickyHeader(key = mapEntry.key) {
                                 Column(
-                                    modifier = Modifier.fillMaxWidth().background(color = RickPrimary)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            color = MaterialTheme.colorScheme.surface
+                                        )
                                 ) {
                                     Text(
                                         text = mapEntry.key,
@@ -81,8 +83,8 @@ fun AllEpisodesScreen(
                                     )
                                     Spacer(modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(4.dp)
                                         .padding(top = 4.dp)
+                                        .height(4.dp)
                                         .background(
                                             color = RickAction,
                                             shape = RoundedCornerShape(2.dp)

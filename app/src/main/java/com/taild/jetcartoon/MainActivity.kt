@@ -9,7 +9,6 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -28,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -46,6 +44,7 @@ import com.taild.jetcartoon.ui.screens.allepisodes.AllEpisodesScreen
 import com.taild.jetcartoon.ui.screens.characterepisode.CharacterEpisodeScreen
 import com.taild.jetcartoon.ui.screens.charaterdetail.CharacterDetailScreen
 import com.taild.jetcartoon.ui.screens.home.HomeScreen
+import com.taild.jetcartoon.ui.screens.search.SearchScreen
 import com.taild.jetcartoon.ui.theme.JetCartoonTheme
 import com.taild.jetcartoon.ui.theme.RickPrimary
 import com.taild.network.KtorClient
@@ -145,31 +144,10 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable<EpisodesRoute> {
-                                /*Column(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(
-                                        text = "Episodes",
-                                        fontSize = 62.sp,
-                                        color = Color.White
-                                    )
-                                }*/
                                 AllEpisodesScreen()
                             }
                             composable<SearchRoute> {
-                                Column(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(
-                                        text = "Search",
-                                        fontSize = 62.sp,
-                                        color = Color.White
-                                    )
-                                }
+                                SearchScreen()
                             }
                         }
                     }
