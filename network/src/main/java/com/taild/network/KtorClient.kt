@@ -74,12 +74,57 @@ class KtorClient {
         }
     }
 
-    suspend fun getEpisodesByPage(pageIndex: Int): ApiOperation<EpisodePage> {
+    private suspend fun getEpisodesByPage(pageIndex: Int): ApiOperation<EpisodePage> {
         return safeApiCall {
             client.get("episode/?page=$pageIndex")
                 .body<RemoteEpisodePage>()
                 .toDomain()
         }
+    }
+
+    suspend fun getCharacterByPage(
+        pageNumber: Int,
+        params: Map<String, String>
+    ): ApiOperation<CharacterPage> {
+        return safeApiCall {
+            client.get("character") {
+                url {
+                    parameters.append("page", pageNumber.toString())
+                    params.forEach { (key, value) ->
+                        parameters.append(key, value)
+                    }
+                }
+            }
+                .body<RemoteCharacterPage>()
+                .toDomain()
+        }
+    }
+
+    suspend fun getCharacterByName(name: String): ApiOperation<List<Character>> {
+        val data = mutableListOf<Character>()
+        var exception: Exception? = null
+
+        val params = mapOf("name" to name)
+
+        var totalPage = 0
+        getCharacterByPage(1, params).onSuccess { page ->
+            totalPage = page.info.pages
+            data.addAll(page.results)
+        }.onFailure { e ->
+            exception = e
+        }
+
+        repeat(totalPage - 1) { index ->
+            getCharacterByPage(index + 2, params).onSuccess { page ->
+                data.addAll(page.results)
+            }.onFailure { e ->
+                exception = e
+            }
+        }
+
+        return exception?.let {
+            ApiOperation.Failure(it)
+        } ?: ApiOperation.Success(data)
     }
 
     suspend fun getAllEpisodes(): ApiOperation<List<Episode>> {

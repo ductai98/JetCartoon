@@ -16,4 +16,10 @@ class CharacterRepository @Inject constructor(
     suspend fun fetchCharacterPage(page: Int): ApiOperation<CharacterPage> {
         return ktorClient.getCharacterByPage(page)
     }
+
+    suspend fun fetchCharactersByName(
+        name: String
+    ): ApiOperation<List<Character>> {
+        return ktorClient.getCharacterByName(name)
+    }
 }
