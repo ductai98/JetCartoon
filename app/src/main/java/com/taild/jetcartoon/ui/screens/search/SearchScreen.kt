@@ -177,7 +177,9 @@ fun SearchScreenContent(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 16.dp)
     ) {
-        items(content.results) { character ->
+        val filteredStatus = content.filterState.selectedStatuses
+        val filteredList = content.results.filter { filteredStatus.contains(it.status) }
+        items(filteredList) { character ->
             val dataPoints = buildList {
                 add(DataPoint("Last known location", character.location.name))
                 add(DataPoint("Species", character.species))

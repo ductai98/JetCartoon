@@ -62,7 +62,7 @@ class SearchViewModel @Inject constructor(
             val newSelectedStatus = if (selectedStatus.contains(status)) {
                 selectedStatus - status
             } else {
-                selectedStatus + selectedStatus
+                selectedStatus + status
             }
 
             currentState.copy(
@@ -86,7 +86,9 @@ class SearchViewModel @Inject constructor(
                 results = characters,
                 filterState = ScreenState.Content.FilterState(
                     statuses = allStatuses,
-                    selectedStatuses = emptyList()
+                    selectedStatuses = buildList {
+                        addAll(allStatuses)
+                    }
                 )
             )
         }.onFailure { e ->
