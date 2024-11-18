@@ -1,26 +1,38 @@
 package com.taild.jetcartoon.ui.screens.search
 
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.delete
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.taild.domain.CharacterStatus
+import com.taild.jetcartoon.components.CharacterListItem
 import com.taild.jetcartoon.components.SimpleToolbar
+import com.taild.jetcartoon.ui.screens.charaterdetail.DataPoint
+import com.taild.jetcartoon.ui.screens.charaterdetail.LoadingState
 import com.taild.jetcartoon.ui.theme.RickAction
 import com.taild.jetcartoon.ui.theme.RickPrimary
 
@@ -38,6 +54,12 @@ import com.taild.jetcartoon.ui.theme.RickPrimary
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
+
+    DisposableEffect(Unit) {
+        val job = viewModel.observeUserSearch()
+        onDispose { job.cancel() }
+    }
+
     Scaffold(
         topBar = {
             SimpleToolbar(title = "Search")
@@ -90,17 +112,101 @@ fun SearchScreen(
                     }
                 }
 
-                val searchText by viewModel.searchTextState.collectAsStateWithLifecycle()
-                Text(
-                    text = searchText,
-                    color = Color.White,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(32.dp),
-                    textAlign = TextAlign.Center,
-                    fontSize = 26.sp
-                )
+                val uiState by viewModel.state.collectAsStateWithLifecycle()
+
+                when (val state = uiState) {
+                    SearchViewModel.ScreenState.Empty -> SearchMessage()
+                    SearchViewModel.ScreenState.Searching -> LoadingState()
+                    is SearchViewModel.ScreenState.Content -> SearchScreenContent(
+                        content = state,
+                        onStatusClick = viewModel::toggleStatus
+                    )
+                    is SearchViewModel.ScreenState.Error -> {
+                        SearchMessage(text = state.message)
+                        Button(
+                            colors = ButtonDefaults.buttonColors().copy(contentColor = RickAction),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 84.dp),
+                            onClick = { viewModel.searchTextFieldState.clearText() }
+                        ) {
+                            Text(text = "Clear search", color = RickPrimary)
+                        }
+                    }
+                }
             }
         }
     }
+}
+
+@Composable
+fun SearchScreenContent(
+    content: SearchViewModel.ScreenState.Content,
+    onStatusClick: (CharacterStatus) -> Unit = {}
+) {
+    Text(
+        text = "${content.results.size} results for '${content.userQuery}'",
+        color = Color.White,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp),
+        textAlign = TextAlign.Start,
+        fontSize = 18.sp
+    )
+    Row(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        content.filterState.statuses.forEach { status ->
+            val selected = content.filterState.selectedStatuses.contains(status)
+            val color = if (selected) RickAction else Color.LightGray
+            Text(
+                text = status.displayName,
+                color = Color.White,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable {
+                        onStatusClick(status)
+                    },
+                textAlign = TextAlign.Start,
+                fontSize = 22.sp
+            )
+        }
+    }
+
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 16.dp)
+    ) {
+        items(content.results) { character ->
+            val dataPoints = buildList {
+                add(DataPoint("Last known location", character.location.name))
+                add(DataPoint("Species", character.species))
+                add(DataPoint("Gender", character.gender.displayName))
+                character.type.takeIf { it.isNotEmpty() }?.let { type ->
+                    add(DataPoint("Type", type))
+                }
+                add(DataPoint("Origin", character.origin.name))
+                add(DataPoint("Episode count", character.episodeIds.size.toString()))
+            }
+
+            CharacterListItem(
+                character = character,
+                characterDataPoints = dataPoints,
+                onClick = {}
+            )
+        }
+    }
+}
+
+@Composable
+fun SearchMessage(text: String = "Search for characters!") {
+    Text(
+        text = text,
+        color = Color.White,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(32.dp),
+        textAlign = TextAlign.Center,
+        fontSize = 26.sp
+    )
 }

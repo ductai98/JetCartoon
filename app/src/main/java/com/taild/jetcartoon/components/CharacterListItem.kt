@@ -56,7 +56,7 @@ fun CharacterListItem(
             contentPadding = PaddingValues(16.dp)
         ) {
             items(
-                items = listOf(DataPoint(title = "name", description = character.name)) + characterDataPoints,
+                items = listOf(DataPoint(title = "Name", description = character.name)) + characterDataPoints,
                 key = { item -> item.title }
             ) {dataPoint ->
                 DataPointComponent(dataPoint = shortenDataPoint(dataPoint))
