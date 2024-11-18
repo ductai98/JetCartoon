@@ -30,7 +30,7 @@ fun CharacterListItem(
     onClick: () -> Unit
 ) {
     Row (
-        modifier = Modifier
+        modifier = modifier
             .height(140.dp)
             .border(
                 width = 1.dp,

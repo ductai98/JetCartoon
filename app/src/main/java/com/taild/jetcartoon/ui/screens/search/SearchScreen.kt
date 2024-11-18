@@ -1,5 +1,6 @@
 package com.taild.jetcartoon.ui.screens.search
 
+import android.view.RoundedCorner
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.compose.animation.AnimatedVisibility
@@ -7,6 +8,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,6 +38,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,6 +52,7 @@ import com.taild.jetcartoon.ui.screens.charaterdetail.DataPoint
 import com.taild.jetcartoon.ui.screens.charaterdetail.LoadingState
 import com.taild.jetcartoon.ui.theme.RickAction
 import com.taild.jetcartoon.ui.theme.RickPrimary
+import kotlinx.serialization.json.JsonNull.content
 
 @Composable
 fun SearchScreen(
@@ -149,37 +153,62 @@ fun SearchScreenContent(
         color = Color.White,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 4.dp),
+            .padding(top = 4.dp, bottom = 4.dp),
         textAlign = TextAlign.Start,
         fontSize = 18.sp
     )
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         content.filterState.statuses.forEach { status ->
             val selected = content.filterState.selectedStatuses.contains(status)
             val color = if (selected) RickAction else Color.LightGray
-            Text(
-                text = status.displayName,
-                color = Color.White,
+            val count = content.results.count { it.status == status }
+            Row(
                 modifier = Modifier
-                    .padding(10.dp)
+                    .border(
+                        width = 1.dp,
+                        color = color,
+                        shape = RoundedCornerShape(8.dp),
+                    )
                     .clickable {
                         onStatusClick(status)
-                    },
-                textAlign = TextAlign.Start,
-                fontSize = 22.sp
-            )
+                    }.clip(RoundedCornerShape(8.dp)),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "$count",
+                    color = RickPrimary,
+                    modifier = Modifier
+                        .background(color = color)
+                        .padding(8.dp),
+                    textAlign = TextAlign.Start,
+                    fontSize = 20.sp
+                )
+                Text(
+                    text = status.displayName,
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(6.dp),
+                    textAlign = TextAlign.Start,
+                    fontSize = 20.sp
+                )
+            }
         }
     }
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 16.dp)
+        contentPadding = PaddingValues(bottom = 16.dp)
     ) {
         val filteredStatus = content.filterState.selectedStatuses
         val filteredList = content.results.filter { filteredStatus.contains(it.status) }
-        items(filteredList) { character ->
+        items(
+            items = filteredList,
+            key = { it.id }
+        ) { character ->
             val dataPoints = buildList {
                 add(DataPoint("Last known location", character.location.name))
                 add(DataPoint("Species", character.species))
@@ -192,9 +221,12 @@ fun SearchScreenContent(
             }
 
             CharacterListItem(
+                modifier = Modifier.animateItem(),
                 character = character,
                 characterDataPoints = dataPoints,
-                onClick = {}
+                onClick = {
+                    // TODO
+                },
             )
         }
     }
