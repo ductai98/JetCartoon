@@ -147,7 +147,11 @@ class MainActivity : ComponentActivity() {
                                 AllEpisodesScreen()
                             }
                             composable<SearchRoute> {
-                                SearchScreen()
+                                SearchScreen(
+                                    onCharacterClicked = {
+                                        navController.navigate(CharacterDetailRoute(it))
+                                    }
+                                )
                             }
                         }
                     }

@@ -56,7 +56,8 @@ import kotlinx.serialization.json.JsonNull.content
 
 @Composable
 fun SearchScreen(
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: SearchViewModel = hiltViewModel(),
+    onCharacterClicked: (Int) -> Unit
 ) {
 
     DisposableEffect(Unit) {
@@ -123,7 +124,8 @@ fun SearchScreen(
                     SearchViewModel.ScreenState.Searching -> LoadingState()
                     is SearchViewModel.ScreenState.Content -> SearchScreenContent(
                         content = state,
-                        onStatusClick = viewModel::toggleStatus
+                        onStatusClick = viewModel::toggleStatus,
+                        onCharacterClicked = onCharacterClicked
                     )
                     is SearchViewModel.ScreenState.Error -> {
                         SearchMessage(text = state.message)
@@ -146,7 +148,8 @@ fun SearchScreen(
 @Composable
 fun SearchScreenContent(
     content: SearchViewModel.ScreenState.Content,
-    onStatusClick: (CharacterStatus) -> Unit = {}
+    onStatusClick: (CharacterStatus) -> Unit = {},
+    onCharacterClicked: (Int) -> Unit = {}
 ) {
     Text(
         text = "${content.results.size} results for '${content.userQuery}'",
@@ -225,7 +228,7 @@ fun SearchScreenContent(
                 character = character,
                 characterDataPoints = dataPoints,
                 onClick = {
-                    // TODO
+                    onCharacterClicked(character.id)
                 },
             )
         }

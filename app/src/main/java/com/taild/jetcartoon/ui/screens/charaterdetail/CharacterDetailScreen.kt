@@ -64,20 +64,20 @@ fun CharacterDetailScreen(
             modifier = Modifier.padding(it),
             color = RickPrimary
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(RickPrimary),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                when (val viewState = state) {
-                    is CharacterDetailViewState.Loading -> {
-                        item { LoadingState() }
-                    }
-                    is CharacterDetailViewState.Error -> {
-                        // TODO Error
-                    }
-                    is CharacterDetailViewState.Success -> {
+            when (val viewState = state) {
+                is CharacterDetailViewState.Error -> {
+                    // TODO Handle Error
+                }
+                CharacterDetailViewState.Loading -> {
+                    LoadingState()
+                }
+                is CharacterDetailViewState.Success -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(RickPrimary),
+                        contentPadding = PaddingValues(16.dp)
+                    ) {
                         val character = viewState.character
                         val dataPoint = viewState.characterDataPoints
                         item {
@@ -147,8 +147,7 @@ fun CharacterDetailScreen(
 fun LoadingState() {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 100.dp),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(
